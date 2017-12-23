@@ -28,7 +28,31 @@ var TableManipulator = function () {
             console.log(tableData);
         },
 
-        getTableData: function() {
+        addRow: function (position) {
+            position = position || -1;
+
+            if (tableData.rows() < position)
+                position = -1;
+
+            return table.insertRow(position);
+        },
+
+        addNRows: function (count, position) {
+            position = position || -1;
+            count = count || 1;
+
+            var rows = [];
+
+            for (var i = 0; i < count; i++) {
+                rows.push(this.addRow(position));
+
+                position = (position === -1) ? -1 : position + 1;
+            }
+
+            return rows;
+        },
+
+        getTableData: function () {
             return tableData;
         }
 
