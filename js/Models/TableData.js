@@ -5,7 +5,7 @@ function TableData(table) {
         return tableObject.rows.length;
     };
 
-    this.cells = function() {
+    this.cols = function() {
         if(tableObject.rows.length > 0)
             return tableObject.rows[0].cells.length;
 

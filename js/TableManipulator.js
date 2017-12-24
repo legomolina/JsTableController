@@ -1,3 +1,5 @@
+"use strict";
+
 var TableManipulator = function () {
     var tableManipulator = {
         debug: true,
@@ -27,7 +29,7 @@ var TableManipulator = function () {
                     if (initTable.hasOwnProperty("nodeName") && initTable.nodeName === "TABLE")
                         table = initTable;
                     else {
-                        if(this.debug)
+                        if (this.debug)
                             console.error("Table must be a selector string or a table document node.");
 
                         return;
@@ -36,7 +38,7 @@ var TableManipulator = function () {
                     break;
 
                 default:
-                    if(this.debug)
+                    if (this.debug)
                         console.error("Table must be a selector string or a table document node.");
 
                     return;
@@ -74,9 +76,9 @@ var TableManipulator = function () {
             return rows;
         };
 
-        this.removeRow = function(rowIndex) {
-            if(rowIndex > tableData.rows()) {
-                if(tableManipulator.debug)
+        this.removeRow = function (rowIndex) {
+            if (rowIndex > tableData.rows()) {
+                if (tableManipulator.debug)
                     console.error("Row index is greater than the number of rows.");
 
                 return;
@@ -85,30 +87,34 @@ var TableManipulator = function () {
             table.deleteRow(rowIndex);
         };
 
-        this.removeNRows = function(count, startPosition) {
-            if(startPosition === undefined)
+        this.removeNRows = function (count, startPosition) {
+            if (startPosition === undefined)
                 startPosition = 0;
 
             count = (count === undefined) ? 1 : count;
 
-            if(startPosition > tableData.rows()) {
-                if(tableManipulator.debug)
+            if (startPosition > tableData.rows()) {
+                if (tableManipulator.debug)
                     console.error("Starting position is greater than the number of rows.");
 
                 return;
             }
 
-            if((count + startPosition) > tableData.rows())
-                for(var i = 0; i <= tableData.rows() - startPosition; i++)
-                    this.removeRow(startPosition);
+            if ((count + startPosition) > tableData.rows()) {
+                if(startPosition > 0)
+                    for (var i = 0; i <= tableData.rows() - startPosition; i++)
+                        this.removeRow(startPosition);
+                else
+                    this.clearTable();
+            }
 
             else
-                for(var i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                     this.removeRow(startPosition);
         };
 
         this.addColumn = function (position) {
-            if (position === undefined || position > tableData.cells())
+            if (position === undefined || position > tableData.cols())
                 position = -1;
 
             var cells = [];
@@ -120,7 +126,7 @@ var TableManipulator = function () {
         };
 
         this.addNColumns = function (count, startPosition) {
-            if (startPosition === undefined || startPosition > tableData.cells())
+            if (startPosition === undefined || startPosition > tableData.cols())
                 startPosition = -1;
 
             count = (count === undefined) ? 1 : count;
@@ -136,11 +142,49 @@ var TableManipulator = function () {
             return cells;
         };
 
-        this.clearTable = function() {
+        this.removeColumn = function (colIndex) {
+            if (colIndex > tableData.cols()) {
+                if (tableManipulator.debug)
+                    console.error("Col index is greater than the number of cols.");
+
+                return;
+            }
+
+            for (var i = 0; i < tableData.rows(); i++)
+                table.rows[i].deleteCell(colIndex);
+        };
+
+        this.removeNColumns = function(count, startPosition) {
+            if (startPosition === undefined)
+                startPosition = 0;
+
+            count = (count === undefined) ? 1 : count;
+
+            if (startPosition > tableData.cols()) {
+                if (tableManipulator.debug)
+                    console.error("Starting position is greater than the number of cols.");
+
+                return;
+            }
+
+            if ((count + startPosition) > tableData.cols()) {
+                if(startPosition > 0)
+                    for (var i = 0; i <= tableData.cols() - startPosition; i++)
+                        this.removeColumn(startPosition);
+                else
+                    this.clearTable();
+            }
+
+            else
+                for (var i = 0; i < count; i++)
+                    this.removeColumn(startPosition);
+        };
+
+        this.clearTable = function () {
             table.innerHTML = "";
         };
 
-        this.removeTable = function() {
+        this.removeTable = function () {
             table.parentNode.removeChild(table);
         };
 
@@ -152,7 +196,7 @@ var TableManipulator = function () {
             if (rowIndex === undefined || rowIndex > tableData.rows())
                 rowIndex = -1;
 
-            if (cellPosition === undefined || cellPosition > tableData.cells())
+            if (cellPosition === undefined || cellPosition > tableData.cols())
                 cellPosition = -1;
 
             return table.rows[rowIndex].insertCell(cellPosition);
