@@ -4,6 +4,12 @@ var TableManipulator = function () {
     var tableManipulator = {
         debug: true,
 
+        /**
+         * createTable: create an html table with the number of rows and columns specified
+         * @param {number} rows Number of rows
+         * @param {number} cols Number of columns
+         * @returns {HTMLTableElement} The table
+         */
         createTable: function (rows, cols) {
             var createdTable = document.createElement("table");
 
@@ -17,6 +23,11 @@ var TableManipulator = function () {
             return createdTable;
         },
 
+        /**
+         * selectTable: create an instance of Manipulator object to allow user manage the table
+         * @param {string|object} initTable The table to attach a Manipulator
+         * @returns {Manipulator} The Manipulator instance
+         */
         selectTable: function (initTable) {
             var table;
 
@@ -32,7 +43,7 @@ var TableManipulator = function () {
                         if (this.debug)
                             console.error("Table must be a selector string or a table document node.");
 
-                        return;
+                        return null;
                     }
 
                     break;
@@ -41,17 +52,27 @@ var TableManipulator = function () {
                     if (this.debug)
                         console.error("Table must be a selector string or a table document node.");
 
-                    return;
+                    return null;
             }
 
             return new Manipulator(table);
         }
     };
 
+    /**
+     * Manipulator: the main class that allows user to manage the table
+     * @param {HTMLTableElement} t The table to be managed
+     * @constructor
+     */
     function Manipulator(t) {
         var table = t;
         var tableData = new TableData(table);
 
+        /**
+         * addRow: adds a row to the table and returns the inserted row
+         * @param {number} [position] The position to insert the row or it will be inserted at the end
+         * @returns {HTMLTableRowElement} The new row
+         */
         this.addRow = function (position) {
             if (position === undefined || position > tableData.rows())
                 position = -1;
@@ -59,6 +80,12 @@ var TableManipulator = function () {
             return table.insertRow(position);
         };
 
+        /**
+         * addNRows: adds N rows to the table at specified position and returns an array containing all rows
+         * @param {number} count The quantity of rows to be inserted
+         * @param {number} [startPosition] The position to start inserting rows
+         * @returns {Array.<HTMLTableRowElement>} Inserted rows
+         */
         this.addNRows = function (count, startPosition) {
             if (startPosition === undefined || startPosition > tableData.rows())
                 startPosition = -1;
@@ -76,6 +103,10 @@ var TableManipulator = function () {
             return rows;
         };
 
+        /**
+         * removeRow: removes the row given by the index
+         * @param {number} rowIndex The index of the row to be removed
+         */
         this.removeRow = function (rowIndex) {
             if (rowIndex > tableData.rows()) {
                 if (tableManipulator.debug)
@@ -87,6 +118,11 @@ var TableManipulator = function () {
             table.deleteRow(rowIndex);
         };
 
+        /**
+         * removeNRows: removes N rows starting at startPosition
+         * @param {number} count The quantity of rows to be removed
+         * @param {number} [startPosition] The position to start removing rows
+         */
         this.removeNRows = function (count, startPosition) {
             if (startPosition === undefined)
                 startPosition = 0;
@@ -113,7 +149,12 @@ var TableManipulator = function () {
                     this.removeRow(startPosition);
         };
 
-        this.addColumn = function (position) {
+        /**
+         * addColumn: adds a column at specified position
+         * @param {number} [position] The position to insert the column or will be inserted at the end
+         * @returns {Array.<HTMLTableDataCellElement>} The inserted cells
+         */
+        this.addColumn = function (positHTMLTableDataCellElemention) {
             if (position === undefined || position > tableData.cols())
                 position = -1;
 
@@ -125,6 +166,12 @@ var TableManipulator = function () {
             return cells;
         };
 
+        /**
+         * addNColumns: adds N columns at specified start position
+         * @param {number} count Quantity of columns to be inserted
+         * @param {number} [startPosition] Position to start to insert columns or they will be inserted at the end
+         * @returns {Array.<HTMLTableDataCellElement>} The inserted cells
+         */
         this.addNColumns = function (count, startPosition) {
             if (startPosition === undefined || startPosition > tableData.cols())
                 startPosition = -1;
@@ -142,6 +189,10 @@ var TableManipulator = function () {
             return cells;
         };
 
+        /**
+         * removeColumn: removes the column at specified index
+         * @param {number} colIndex The index of the column to be removed
+         */
         this.removeColumn = function (colIndex) {
             if (colIndex > tableData.cols()) {
                 if (tableManipulator.debug)
@@ -154,6 +205,11 @@ var TableManipulator = function () {
                 table.rows[i].deleteCell(colIndex);
         };
 
+        /**
+         * removeNColumns: removes N columns starting at startPosition
+         * @param {number} count The quantity of columns to be deleted
+         * @param {number} [startPosition] The starting position to delete columns
+         */
         this.removeNColumns = function(count, startPosition) {
             if (startPosition === undefined)
                 startPosition = 0;
@@ -180,18 +236,34 @@ var TableManipulator = function () {
                     this.removeColumn(startPosition);
         };
 
+        /**
+         * clearTable: clears the table (SQL = truncate)
+         */
         this.clearTable = function () {
             table.innerHTML = "";
         };
 
+        /**
+         * removeTable: removes the table from the document
+         */
         this.removeTable = function () {
             table.parentNode.removeChild(table);
         };
 
+        /**
+         * getTableData: returns the TableData object attached to the table
+         * @returns {TableData} The TableData object
+         */
         this.getTableData = function () {
             return tableData;
         };
 
+        /**
+         * addCell: adds a cell to the specified row in the given index and returns the new cell
+         * @param {number} rowIndex The index of the row that will be the cell attached
+         * @param {number} cellPosition The position inside the row where will be created the new cell
+         * @returns {HTMLTableDataCellElement} The created cell
+         */
         function addCell(rowIndex, cellPosition) {
             if (rowIndex === undefined || rowIndex > tableData.rows())
                 rowIndex = -1;
