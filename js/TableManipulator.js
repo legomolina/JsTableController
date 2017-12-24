@@ -1,30 +1,6 @@
 var TableManipulator = function () {
     var tableManipulator = {
-        selectTable: function (initTable) {
-            var table;
-
-            switch (typeof initTable) {
-                case "string":
-                    table = document.querySelector(initTable);
-                    break;
-
-                case "object":
-                    if (initTable.hasOwnProperty("nodeName") && initTable.nodeName === "TABLE")
-                        table = initTable;
-                    else {
-                        console.warn("Table must be a selector string or a table document node.");
-                        return;
-                    }
-
-                    break;
-
-                default:
-                    console.warn("Table must be a selector string or a table document node.");
-                    return;
-            }
-
-            return new Manipulator(table);
-        },
+        debug: true,
 
         createTable: function (rows, cols) {
             var createdTable = document.createElement("table");
@@ -37,6 +13,36 @@ var TableManipulator = function () {
             }
 
             return createdTable;
+        },
+
+        selectTable: function (initTable) {
+            var table;
+
+            switch (typeof initTable) {
+                case "string":
+                    table = document.querySelector(initTable);
+                    break;
+
+                case "object":
+                    if (initTable.hasOwnProperty("nodeName") && initTable.nodeName === "TABLE")
+                        table = initTable;
+                    else {
+                        if(this.debug)
+                            console.error("Table must be a selector string or a table document node.");
+
+                        return;
+                    }
+
+                    break;
+
+                default:
+                    if(this.debug)
+                        console.error("Table must be a selector string or a table document node.");
+
+                    return;
+            }
+
+            return new Manipulator(table);
         }
     };
 
@@ -68,6 +74,39 @@ var TableManipulator = function () {
             return rows;
         };
 
+        this.removeRow = function(rowIndex) {
+            if(rowIndex > tableData.rows()) {
+                if(tableManipulator.debug)
+                    console.error("Row index is greater than the number of rows.");
+
+                return;
+            }
+
+            table.deleteRow(rowIndex);
+        };
+
+        this.removeNRows = function(count, startPosition) {
+            if(startPosition === undefined)
+                startPosition = 0;
+
+            count = (count === undefined) ? 1 : count;
+
+            if(startPosition > tableData.rows()) {
+                if(tableManipulator.debug)
+                    console.error("Starting position is greater than the number of rows.");
+
+                return;
+            }
+
+            if((count + startPosition) > tableData.rows())
+                for(var i = 0; i <= tableData.rows() - startPosition; i++)
+                    this.removeRow(startPosition);
+
+            else
+                for(var i = 0; i < count; i++)
+                    this.removeRow(startPosition);
+        };
+
         this.addColumn = function (position) {
             if (position === undefined || position > tableData.cells())
                 position = -1;
@@ -95,6 +134,14 @@ var TableManipulator = function () {
             }
 
             return cells;
+        };
+
+        this.clearTable = function() {
+            table.innerHTML = "";
+        };
+
+        this.removeTable = function() {
+            table.parentNode.removeChild(table);
         };
 
         this.getTableData = function () {
