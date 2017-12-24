@@ -1,7 +1,7 @@
 "use strict";
 
-var TableManipulator = function () {
-    var tableManipulator = {
+var JsTableController = function () {
+    var tableController = {
         debug: true,
 
         /**
@@ -275,5 +275,5 @@ var TableManipulator = function () {
         }
     }
 
-    return tableManipulator;
+    return tableController;
 }();
