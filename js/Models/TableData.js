@@ -15,5 +15,5 @@ function TableData(table) {
     this.selectedCell = {
         top: 0,
         left: 0
-    }
+    };
 }

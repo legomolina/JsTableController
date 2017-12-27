@@ -1,6 +1,4 @@
-"use strict";
-
-var JsTableController = function () {
+define(["Models/TableDataAMD"], function (TableData) {
     var tableController = {
         debug: true,
 
@@ -276,4 +274,4 @@ var JsTableController = function () {
     }
 
     return tableController;
-}();
+});
