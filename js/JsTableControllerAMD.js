@@ -22,9 +22,9 @@ define(["Models/TableDataAMD"], function (TableData) {
         },
 
         /**
-         * selectTable: create an instance of Manipulator object to allow user manage the table
-         * @param {string|object} initTable The table to attach a Manipulator
-         * @returns {Manipulator} The Manipulator instance
+         * selectTable: create an instance of Controller object to allow user manage the table
+         * @param {string|object} initTable The table to attach a Controller
+         * @returns {Controller} The Controller instance
          */
         selectTable: function (initTable) {
             var table;
@@ -53,16 +53,16 @@ define(["Models/TableDataAMD"], function (TableData) {
                     return null;
             }
 
-            return new Manipulator(table);
+            return new Controller(table);
         }
     };
 
     /**
-     * Manipulator: the main class that allows user to manage the table
+     * Controller: the main class that allows user to manage the table
      * @param {HTMLTableElement} t The table to be managed
      * @constructor
      */
-    function Manipulator(t) {
+    function Controller(t) {
         var table = t;
         var tableData = new TableData(table);
 
@@ -107,7 +107,7 @@ define(["Models/TableDataAMD"], function (TableData) {
          */
         this.removeRow = function (rowIndex) {
             if (rowIndex > tableData.rows()) {
-                if (tableManipulator.debug)
+                if (tableController.debug)
                     console.error("Row index is greater than the number of rows.");
 
                 return;
@@ -128,7 +128,7 @@ define(["Models/TableDataAMD"], function (TableData) {
             count = (count === undefined) ? 1 : count;
 
             if (startPosition > tableData.rows()) {
-                if (tableManipulator.debug)
+                if (tableController.debug)
                     console.error("Starting position is greater than the number of rows.");
 
                 return;
@@ -193,7 +193,7 @@ define(["Models/TableDataAMD"], function (TableData) {
          */
         this.removeColumn = function (colIndex) {
             if (colIndex > tableData.cols()) {
-                if (tableManipulator.debug)
+                if (tableController.debug)
                     console.error("Col index is greater than the number of cols.");
 
                 return;
@@ -215,7 +215,7 @@ define(["Models/TableDataAMD"], function (TableData) {
             count = (count === undefined) ? 1 : count;
 
             if (startPosition > tableData.cols()) {
-                if (tableManipulator.debug)
+                if (tableController.debug)
                     console.error("Starting position is greater than the number of cols.");
 
                 return;
